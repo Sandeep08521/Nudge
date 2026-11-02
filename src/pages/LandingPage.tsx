@@ -1,13 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
-  Bell,
   Calendar,
   Check,
   CheckCircle2,
   Clock3,
-  ExternalLink,
   FileText,
+  Fingerprint,
+  Landmark,
+  ListChecks,
+  Smartphone,
   Lock,
   Mail,
   ShieldAlert,
@@ -15,90 +17,15 @@ import {
   Sparkles,
   TrendingDown,
   Wallet,
-  Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { authService } from "@/lib/authService";
-import { useEffect, useState } from "react";
+import { PublicFooter, PublicHeader } from "@/components/PublicChrome";
 
 export function LandingPage() {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    authService.getSession().then((session) => {
-      setIsLoggedIn(Boolean(session));
-    });
-  }, []);
-
   return (
     <div className="paper-surface min-h-screen text-foreground selection:bg-gold-soft selection:text-foreground">
-      {/* Navigation Header */}
-      <header className="border-b border-border bg-card/85 sticky top-0 z-30 backdrop-blur-md">
-        <div className="mx-auto flex h-18 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="ledger-mark flex size-9 items-center justify-center rounded-sm border border-primary bg-primary text-primary-foreground shadow-sm">
-              <span className="font-display text-2xl italic leading-none">N</span>
-            </div>
-            <div className="flex flex-col leading-tight">
-              <div className="flex items-center gap-2">
-                <span className="font-display text-[23px] text-foreground">Nudge</span>
-                <span className="rounded bg-gold-soft px-1.5 py-0.5 text-[9px] font-black uppercase text-gold tracking-wider">
-                  Global
-                </span>
-              </div>
-              <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                Take back recurring spend
-              </span>
-            </div>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-6 text-xs font-semibold text-muted-foreground">
-            <a href="#problem" className="hover:text-foreground transition-colors">
-              The Reality
-            </a>
-            <a href="#features" className="hover:text-foreground transition-colors">
-              Features
-            </a>
-            <a href="#cancellation" className="hover:text-foreground transition-colors">
-              Cancellation Hub
-            </a>
-            <a href="#privacy" className="hover:text-foreground transition-colors">
-              Privacy First
-            </a>
-            <a href="#faq" className="hover:text-foreground transition-colors">
-              FAQ
-            </a>
-          </nav>
-
-          <div className="flex items-center gap-3">
-            {isLoggedIn ? (
-              <Button
-                onClick={() => navigate("/dashboard")}
-                className="font-bold text-xs gap-1.5 h-9"
-              >
-                Go to Dashboard <ArrowRight className="size-3.5" />
-              </Button>
-            ) : (
-              <>
-                <Button
-                  variant="ghost"
-                  onClick={() => navigate("/auth?mode=signin")}
-                  className="text-xs font-bold text-muted-foreground hover:text-foreground h-9"
-                >
-                  Sign In
-                </Button>
-                <Button
-                  onClick={() => navigate("/auth?mode=signup")}
-                  className="font-bold text-xs gap-1.5 h-9"
-                >
-                  Get Started Free <ArrowRight className="size-3.5" />
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <PublicHeader />
 
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-12 pb-20 md:pt-20 md:pb-28">
@@ -106,7 +33,7 @@ export function LandingPage() {
           <div className="text-center space-y-5 max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold-soft/30 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-gold">
               <Sparkles className="size-3.5" />
-              <span>Universal Subscription Awareness & Cancellation Assistant</span>
+              <span>Subscription tracker & cancellation assistant</span>
             </div>
 
             <h1 className="font-display text-4xl sm:text-5xl md:text-6xl leading-[1.1] text-foreground tracking-tight">
@@ -114,7 +41,7 @@ export function LandingPage() {
             </h1>
 
             <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Nudge gives you a private, single view of your recurring spend, computes your real <strong>Cost-Per-Use</strong> with AI, and guides you to revoke recurring mandates across <strong>Apple, Google Play, PayPal, Cards, and Banks</strong> before debits occur.
+              See every recurring charge in one place, find out what each one really costs you per use, and cancel at the source: <strong>Apple, Google Play, PayPal, cards and banks</strong>. Connect your bank with a one-time <strong>Account Aggregator</strong> consent, or just paste a statement. No passwords either way.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-3.5 pt-3">
@@ -133,20 +60,28 @@ export function LandingPage() {
               >
                 Sign In to Your Workspace
               </Button>
+              <Button
+                size="lg"
+                variant="secondary"
+                onClick={() => navigate("/try-aggregator")}
+                className="h-11 gap-2 px-6 text-sm font-bold"
+              >
+                <Landmark className="size-4" /> Try Account Aggregator
+              </Button>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-6 pt-6 text-xs text-muted-foreground font-semibold">
               <span className="flex items-center gap-1.5">
-                <Check className="size-4 text-sage" /> Zero bank logins
+                <Check className="size-4 text-sage" /> No bank passwords
               </span>
               <span className="flex items-center gap-1.5">
-                <Check className="size-4 text-sage" /> Zero Gmail scraping
+                <Check className="size-4 text-sage" /> No inbox scraping
               </span>
               <span className="flex items-center gap-1.5">
-                <Check className="size-4 text-sage" /> Multi-Currency Support ($, €, £, C$, A$, ₹)
+                <Check className="size-4 text-sage" /> Multi-currency ($ € £ C$ A$ ₹)
               </span>
               <span className="flex items-center gap-1.5">
-                <Check className="size-4 text-sage" /> 100% Free during beta
+                <Check className="size-4 text-sage" /> Free during beta
               </span>
             </div>
           </div>
@@ -266,7 +201,7 @@ export function LandingPage() {
               </div>
               <h3 className="font-display text-xl font-bold">Invasive Trackers</h3>
               <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-                Traditional trackers demand access to your bank login passwords, scan your personal email inbox, or sell aggregated purchase habits. Nudge operates with zero financial account linking.
+                Traditional trackers demand your net-banking password, scan your inbox, or sell your purchase habits. Nudge never asks for a password. Linking a bank is optional, consent-based and revocable.
               </p>
             </div>
           </div>
@@ -319,7 +254,7 @@ export function LandingPage() {
               <FileText className="size-5 text-sage" />
               <h4 className="font-display text-xl">Paste Statement & Alerts</h4>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Paste bank charge notifications or billing statements. Our client-side parser detects recurring charges without sending raw financial statements to external servers.
+                Paste bank charge notifications or billing statements. Our client-side parser detects recurring charges without sending raw statements to any server.
               </p>
             </div>
 
@@ -344,8 +279,83 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* Account Aggregator: Try it */}
+      <section id="aggregator" className="border-t border-border bg-card/30 py-16 md:py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto mb-12 max-w-3xl space-y-3 text-center">
+            <p className="section-kicker">TRY IT NOW · NO SIGN-UP</p>
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl">Connect your bank without sharing a password.</h2>
+            <p className="text-sm leading-relaxed text-muted-foreground md:text-base">
+              India&apos;s Account Aggregator framework lets you share bank data through a consent you control. Run the full flow in our sandbox and see what Nudge would find.
+            </p>
+          </div>
+
+          <div className="grid items-center gap-10 lg:grid-cols-2">
+            <ol className="space-y-4">
+              {[
+                { icon: Smartphone, t: "Enter your mobile number", d: "Pick an AA like Finvu or OneMoney and verify with an OTP." },
+                { icon: ListChecks, t: "Choose accounts and approve consent", d: "See the purpose, date range and expiry before you say yes." },
+                { icon: Fingerprint, t: "Nudge finds the recurring charges", d: "Six months of transactions, scanned for subscriptions, price hikes and renewals." },
+              ].map((x, i) => (
+                <li key={x.t} className="flex gap-4 rounded-lg border border-border bg-card p-4">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-gold-soft text-gold">
+                    <x.icon className="size-5" />
+                  </span>
+                  <div>
+                    <p className="text-[10px] font-extrabold uppercase tracking-widest text-muted-foreground">Step {i + 1}</p>
+                    <h3 className="text-sm font-bold">{x.t}</h3>
+                    <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{x.d}</p>
+                  </div>
+                </li>
+              ))}
+              <li className="flex flex-wrap items-center gap-3 pt-2">
+                <Button size="lg" onClick={() => navigate("/try-aggregator")} className="h-11 gap-2 px-7 text-sm font-bold shadow-md">
+                  <Landmark className="size-4" /> Try Account Aggregator
+                </Button>
+                <span className="text-[11px] text-muted-foreground">Sandbox · synthetic data · takes ~1 minute</span>
+              </li>
+            </ol>
+
+            {/* Preview */}
+            <div className="rounded-xl border border-border bg-card p-5 shadow-xl sm:p-6" aria-hidden="true">
+              <div className="flex items-center justify-between border-b border-border pb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Consent request</span>
+                <span className="rounded bg-sage-soft px-2 py-0.5 text-[10px] font-black uppercase text-sage">Read-only</span>
+              </div>
+              <dl className="mt-4 space-y-2.5 text-xs">
+                {[
+                  ["Purpose", "Detect recurring payments"],
+                  ["Data", "Transactions · account summary"],
+                  ["Range", "Last 6 months"],
+                  ["Valid for", "24 hours · one-time"],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex justify-between gap-4 rounded-md bg-secondary/40 px-3 py-2">
+                    <dt className="text-muted-foreground">{k}</dt>
+                    <dd className="text-right font-semibold">{v}</dd>
+                  </div>
+                ))}
+              </dl>
+              <div className="mt-4 space-y-2">
+                {[
+                  ["Netflix", "₹649", "monthly"],
+                  ["ChatGPT Plus", "₹1,999", "monthly"],
+                  ["JioHotstar", "₹299", "quarterly"],
+                ].map(([n, a, c]) => (
+                  <div key={n} className="flex items-center gap-3 rounded-md border border-border px-3 py-2">
+                    <span className="brand-icon flex size-7 items-center justify-center rounded font-display">{n[0]}</span>
+                    <span className="flex-1 text-xs font-bold">{n}</span>
+                    <span className="text-[10px] text-muted-foreground">{c}</span>
+                    <span className="text-xs font-bold tabular-nums">{a}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Cancellation Hub Deep Dive */}
-      <section id="cancellation" className="border-t border-border py-16 md:py-24 bg-card/30">
+      <section id="cancellation" className="border-t border-border py-16 md:py-24">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-2 items-center">
             <div className="space-y-5">
@@ -413,7 +423,7 @@ export function LandingPage() {
       </section>
 
       {/* Comparison Section */}
-      <section id="privacy" className="border-t border-border py-16 md:py-24">
+      <section id="privacy" className="border-t border-border py-16 md:py-24 bg-card/30">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center space-y-3 mb-12">
             <p className="section-kicker">RADICAL SIMPLICITY</p>
@@ -437,8 +447,8 @@ export function LandingPage() {
               </thead>
               <tbody className="divide-y divide-border/60">
                 <tr>
-                  <td className="py-3.5 px-4 font-semibold">Bank / Netbanking Login</td>
-                  <td className="py-3.5 px-4 font-bold text-sage">Never (Zero Access)</td>
+                  <td className="py-3.5 px-4 font-semibold">Bank password sharing</td>
+                  <td className="py-3.5 px-4 font-bold text-sage">Never. AA uses OTP consent</td>
                   <td className="py-3.5 px-4 text-destructive">Requires Plaid / Bank Logins</td>
                   <td className="py-3.5 px-4">None</td>
                 </tr>
@@ -479,7 +489,7 @@ export function LandingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="border-t border-border py-16 md:py-24 bg-card/30">
+      <section id="faq" className="border-t border-border py-16 md:py-24">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-3 mb-12">
             <p className="section-kicker">FREQUENTLY ASKED QUESTIONS</p>
@@ -490,7 +500,14 @@ export function LandingPage() {
             <div className="rounded-lg border border-border bg-card p-5 space-y-2">
               <h3 className="font-display text-lg font-bold">Do you ask for my bank password or card numbers?</h3>
               <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-                Never. Nudge operates strictly on manual entry and client-side statement pasting. We deliberately do not integrate with bank logins or read private emails.
+                Never. Nudge doesn't want your net-banking password or card number. You can add subscriptions by hand, paste a statement (parsed in your browser), or try the Account Aggregator sandbox, where you approve a read-only consent with an OTP at your AA.
+              </p>
+            </div>
+
+            <div className="rounded-lg border border-border bg-card p-5 space-y-2">
+              <h3 className="font-display text-lg font-bold">What is an Account Aggregator, and is the demo real?</h3>
+              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                An Account Aggregator (AA) is an RBI-licensed service that shares your financial data with an app only after you approve a time-limited consent. The demo on this site is a sandbox with made-up transactions: it shows the exact flow, but no bank is contacted. Live AA access will launch once Nudge completes onboarding as a registered Financial Information User.
               </p>
             </div>
 
@@ -525,7 +542,7 @@ export function LandingPage() {
             Take back control of your recurring spend today.
           </h2>
           <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Create your private account in seconds. No bank logins, no credit card required.
+            Create your private account in seconds. No bank password, no credit card required.
           </p>
           <div className="pt-2">
             <Button
@@ -535,22 +552,14 @@ export function LandingPage() {
             >
               Create Free Account <ArrowRight className="size-4" />
             </Button>
+            <Button size="lg" variant="outline" onClick={() => navigate("/try-aggregator")} className="ml-3 h-11 px-6 text-sm font-bold">
+              Try the demo first
+            </Button>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border py-8 text-center text-xs text-muted-foreground bg-card/60">
-        <div className="mx-auto max-w-6xl px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-display text-lg text-foreground font-bold">Nudge</span>
-            <span>· Take back recurring spend</span>
-          </div>
-          <p className="text-[11px]">
-            Global Edition · In Active Development · Zero Bank Credentials Stored
-          </p>
-        </div>
-      </footer>
+      <PublicFooter />
     </div>
   );
 }

@@ -22,7 +22,8 @@
   - [5. 1-Click Phone Calendar Sync (.ics) for Pre-Debit Alarms](#5-1-click-phone-calendar-sync-ics-for-pre-debit-alarms)
   - [6. Consumer Refund & Cancellation Notice Generator](#6-consumer-refund--cancellation-notice-generator)
   - [7. Flexible Billing Cycles & Shared Plan Splitter](#7-flexible-billing-cycles--shared-plan-splitter)
-  - [8. Sign In with Google or Email (Dual Engine)](#8-sign-in-with-google-or-email-dual-engine)
+  - [8. Try Account Aggregator (Sandbox)](#8-try-account-aggregator-sandbox)
+  - [9. Sign In with Google or Email (Dual Engine)](#9-sign-in-with-google-or-email-dual-engine)
 - [Tech Stack](#-tech-stack)
 - [Project Architecture](#-project-architecture)
 - [Getting Started Locally](#-getting-started-locally)
@@ -50,7 +51,7 @@ Commercial subscription apps (like Rocket Money) come with critical compromises:
 - ❌ **Fragile Browser Automation:** They attempt to cancel on your behalf using fragile automation bots that frequently break.
 
 ### The Nudge Philosophy:
-- 🔒 **Zero Bank Logins:** We never ask for bank account credentials or financial aggregators.
+- 🔒 **Zero Bank Passwords:** We never ask for net-banking credentials. Optional bank linking uses India's consent-based **Account Aggregator** framework (sandbox today).
 - 📬 **Zero Inbox Scraping:** No Gmail reading, no OAuth mailbox permissions.
 - 🌐 **Global & Multi-Currency:** Built with first-class support for USD ($), EUR (€), GBP (£), CAD (C$), AUD (A$), and INR (₹).
 - ⚡ **Direct Platform Cancellation:** Guides you to terminate recurring mandates at the source — Apple App Store, Google Play, PayPal, Card Portals, and Bank Direct Debits.
@@ -113,7 +114,12 @@ Billed accidentally by a forgotten trial or unwanted renewal?
 * Supports **Monthly**, **Quarterly (3 months)**, **Semi-Annual (6 months)**, and **Yearly** billing cycles.
 * Built-in cost splitter for family plans and team workspaces — enter the total bill and your share, and Nudge tracks only what you pay.
 
-### 8. Sign In with Google or Email (Dual Engine)
+### 8. Try Account Aggregator (Sandbox)
+Visit `/try-aggregator` (no sign-up) to walk the full AA consent flow: pick an AA, verify by OTP, choose accounts, review the consent, then see recurring charges detected from six months of **synthetic** transactions. Signed-in users import them from **Connect Bank (AA)** in the sidebar.
+* Code: `src/lib/aggregator.ts` (sandbox data + recurring detector), `src/components/AggregatorFlow.tsx` (UI).
+* **Going live:** register as an FIU with an AA (Finvu, OneMoney, etc.) and replace `buildSandboxTransactions` with a call to your backend. Nudge is not yet a registered FIU.
+
+### 9. Sign In with Google or Email (Dual Engine)
 * **Continue with Google:** Quick one-click authentication.
 * **Instant Offline / Local Mode:** Private accounts stored securely in browser storage — zero external configuration required to get started immediately.
 * **Supabase Cloud Sync:** Optional multi-device synchronization backed by PostgreSQL and database-level Row Level Security (RLS).
@@ -176,6 +182,97 @@ nudge-webapp/
 ├── vite.config.ts          # Vite configuration & path aliases
 └── package.json            # Project dependencies & scripts
 ```
+
+---
+
+## 💻 Getting Started Locally
+
+### Prerequisites
+* [Node.js](https://nodejs.org/) (v18 or higher recommended)
+* [npm](https://www.npmjs.com/)
+
+### 1. Install Dependencies
+```bash
+npm install
+```
+
+### 2. Start Development Server
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser:
+* The public **Landing Page** introduces the platform.
+* Click **"Get Started Free"** or **"Sign In"** to test with Google or email.
+* Local encrypted storage allows you to test immediately without configuring cloud keys!
+
+### 3. Build for Production
+```bash
+npm run build
+```
+
+---
+
+## ☁️ Connecting Supabase Cloud (Optional)
+
+If you wish to enable multi-device synchronization:
+
+1. Create a free account at [supabase.com](https://supabase.com) and create a project.
+2. In the Supabase dashboard, navigate to **SQL Editor** ➔ **New Query**.
+3. Paste the contents of [`supabase/schema.sql`](supabase/schema.sql) and click **Run**. This configures the `subscriptions` table and strict Row Level Security (RLS) rules so users can only ever access their own data.
+4. Copy your project's **API URL** and **Anon Key**:
+   * Either add a `.env` file in the root directory:
+     ```env
+     VITE_SUPABASE_URL=https://your-project-id.supabase.co
+     VITE_SUPABASE_ANON_KEY=your-anon-key-here
+     ```
+   * Or simply open the app, navigate to **Settings**, and paste your keys into the **Cloud Sync** panel!
+
+---
+
+## 🚀 Deploying to GitHub & Vercel
+
+### Step 1: Push Code to GitHub
+
+Open your terminal in the project directory (`nudge-webapp`) and run:
+
+```bash
+# 1. Initialize git repository
+git init
+
+# 2. Stage all files
+git add .
+
+# 3. Create the initial commit
+git commit -m "feat: complete global Nudge subscription tracker"
+
+# 4. Set default branch to main
+git branch -M main
+
+# 5. Link your GitHub repository (replace with your repo URL)
+git remote add origin https://github.com/<YOUR-USERNAME>/nudge-webapp.git
+
+# 6. Push to GitHub
+git push -u origin main
+```
+
+### Step 2: Deploy on Vercel
+
+1. Log in to [vercel.com](https://vercel.com) using your GitHub account.
+2. Click **"Add New..."** ➔ **"Project"** and import your `nudge-webapp` repository.
+3. Vercel automatically detects Vite:
+   * **Framework Preset:** `Vite`
+   * **Build Command:** `npm run build`
+   * **Output Directory:** `dist`
+4. *(Optional)* Under **Environment Variables**, add:
+   * `VITE_SUPABASE_URL`
+   * `VITE_SUPABASE_ANON_KEY`
+5. Click **"Deploy"**.
+
+Your application will be live globally in under a minute! All client routes (`/dashboard`, `/subscriptions`, `/auth`, etc.) will route seamlessly thanks to the configured [`vercel.json`](vercel.json) rewrites.
+
+---
+
 ## 📜 License
 
 Distributed under the MIT License. See `LICENSE` for details.

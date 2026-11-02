@@ -59,6 +59,7 @@ export function AuthScreen({ onAuthSuccess }: { onAuthSuccess: (session: AuthSes
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
+  const afterAuthPath = searchParams.get("next") === "aggregator" ? "/aggregator" : "/dashboard";
   const queryMode = searchParams.get("mode");
   const [mode, setMode] = useState<Mode>(queryMode === "signup" ? "signup" : "signin");
   const [email, setEmail] = useState("");
@@ -85,7 +86,7 @@ export function AuthScreen({ onAuthSuccess }: { onAuthSuccess: (session: AuthSes
 
   const switchMode = (next: Mode) => {
     setMode(next);
-    setSearchParams({ mode: next });
+    setSearchParams(searchParams.get("next") ? { mode: next, next: searchParams.get("next")! } : { mode: next });
     setError("");
     setNotice("");
     setOtpStep(false);
@@ -125,7 +126,7 @@ export function AuthScreen({ onAuthSuccess }: { onAuthSuccess: (session: AuthSes
       if (mode === "signin") {
         const session = await authService.signIn(email, password);
         onAuthSuccess(session);
-        navigate("/dashboard");
+        navigate(afterAuthPath);
       } else {
         // Sign up with email verification
         const res = await authService.sendVerificationCode(email, password);
@@ -150,7 +151,7 @@ export function AuthScreen({ onAuthSuccess }: { onAuthSuccess: (session: AuthSes
       const session = await authService.verifyOtp(email, otpCode);
       toast.success("Email verified successfully! Welcome to Nudge.");
       onAuthSuccess(session);
-      navigate("/dashboard");
+      navigate(afterAuthPath);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Verification failed. Please check the code.");
     } finally {
@@ -202,7 +203,7 @@ export function AuthScreen({ onAuthSuccess }: { onAuthSuccess: (session: AuthSes
       if (session.user.id !== "oauth_redirecting") {
         setGoogleModalOpen(false);
         onAuthSuccess(session);
-        navigate("/dashboard");
+        navigate(afterAuthPath);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Google authentication failed.");

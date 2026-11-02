@@ -4,6 +4,7 @@ import {
   Bell,
   CalendarDays,
   Download,
+  Landmark,
   FileText,
   LayoutDashboard,
   Lightbulb,
@@ -98,6 +99,7 @@ export function AppLayout() {
     { to: "/subscriptions", label: "Subscriptions", icon: Wallet },
     { to: "/advisor", label: "AI Advisor", icon: Lightbulb },
     { to: "/guides", label: "Cancellation Hub", icon: ShieldAlert },
+    { to: "/aggregator", label: "Connect Bank (AA)", icon: Landmark },
     { to: "/import", label: "Paste Statement", icon: FileText },
     { to: "/settings", label: "Settings", icon: Settings },
   ];
